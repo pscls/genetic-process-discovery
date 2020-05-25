@@ -7,6 +7,13 @@ def get_normalized_random_values(n):
     normalized_probabilities = [p / s for p in probabilities]
     return normalized_probabilities
 
+def _eta(symbolA, symbolB, symbol_string: [str]):
+    counter = 0
+    for i in range(len(symbol_string) - 1):
+        if symbol_string[i] == symbolA and symbol_string[i+1] == symbolB:
+            counter += 1
+    return counter
+
 
 class TransitionMatrix:
     def __init__(self):
@@ -47,6 +54,28 @@ class TransitionMatrix:
                     m.set(event, _event, probabilities.pop())
         
         return m
+
+    def init_m_plus(events: [str], symbol_string: str):
+        m = TransitionMatrix()
+        # Add all events to matrix - start and stop are already in
+        for event in events:
+            m.add_event(event)
+        
+        symbols = ["START"] + list(symbol_string) + ["END"]
+        
+        for symbolA in symbols:
+            for symbolB in symbols:
+                if symbolA == symbolB:
+                    continue
+                nominator = _eta(symbolA, symbolB, symbols)
+                denominator = 0
+                for symbol_ in symbols:
+                    denominator += _eta(symbolA, symbol_, symbols)
+                value = nominator / denominator if denominator > 0 else 0
+                m.set(symbolA, symbolB, value)
+
+        return m
+
 
     def get_symbols(self):
         return list(self.matrix.keys())

@@ -102,7 +102,7 @@ def update_m(M, s, y):
 
 
 SymbolSequence = "ACDAEACCDDAEFFAFCCDFABAADACCCDDAFEDGABEGFCADEHBHACAGHACDEDECDAFAFAFCACDCDEAFCDFCGHDDFF"
-TM = TransitionMatrix.init_randomized(["A", "B", "C", "D", "E", "F", "G", "H"])
+TM = TransitionMatrix.init_m_plus(["A", "B", "C", "D", "E", "F", "G", "H"], SymbolSequence)
 LAST_MATRIX = None
 
 for i in range(100):
