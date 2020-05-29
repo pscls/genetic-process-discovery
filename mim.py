@@ -44,10 +44,10 @@ import math
 
 def normalize(d):
     rowsum = 0.0
-    for k in d.iterkeys():
+    for k in d.keys():
         rowsum = rowsum + d[k]
     if rowsum > 0.0:
-        for k in d.iterkeys():
+        for k in d.keys():
             d[k] = d[k] / rowsum
 
 # general routine for converting a sequence to string
@@ -64,7 +64,7 @@ def seq2str(seq):
 
 
 def sortbyvalue(d):
-    return sorted(d.iteritems(), key=itemgetter(1), reverse=True)
+    return sorted(d.items(), key=itemgetter(1), reverse=True)
 
 # routine for computing the G-metric between two MIM models
 
@@ -73,7 +73,7 @@ def gmetric(m1, m2):
     pz = m1.seqprobs()
     qz = m2.seqprobs()
     g = 0.0
-    for z in pz.iterkeys():
+    for z in pz.keys():
         if z in qz:
             g += math.sqrt(pz[z]*qz[z])
     return g
@@ -115,18 +115,18 @@ class model:
         for a in self.D:
             normalize(self.gM[a])
 
-    # print a given transition matrix T
+    # printa given transition matrix T
     def printmodel(self, T):
         for a in self.D:
-            print a.ljust(5),
-        print
+            print(a.ljust(5))
+        print("")
         for a in self.D:
-            print a.ljust(5),
+            print(a.ljust(5),)
             for b in self.D:
                 if T[a][b] == 0.0:
-                    print '-'.ljust(5),
+                    print('-'.ljust(5))
                 else:
-                    print '{0:.2f}'.format(T[a][b]).ljust(5),
+                    print('{0:.2f}'.format(T[a][b]).ljust(5))
 
     # estimate the source sequence s from a given transition matrix T (algorithm 1 in the paper)
 
@@ -169,7 +169,7 @@ class model:
             self.M[a] = dict()
             for b in self.D:
                 self.M[a][b] = 0.0
-        for k in self.y.iterkeys():
+        for k in self.y.keys():
             a = self.BEGIN
             b = self.y[k][0]
             self.M[a][b] += 1.0
@@ -186,23 +186,23 @@ class model:
     # expectation-maximization procedure to estimate s and M iteratively (algorithm 2 in the paper)
     def estimate(self):
         prevsseqs = []
-        print 'Initializing source sequence...'
+        print('Initializing source sequence...')
         # start with an estimate of s computed from the global model gM
         self.estsources(self.gM)
         its = 0
         while self.s not in prevsseqs:
             its += 1
-            print '#{0}: Estimating parameters...'.format(its)
+            print('#{0}: Estimating parameters...'.format(its))
             self.estparams()  # update transition matrix M
             prevsseqs.append(self.s[:])
-            print '#{0}: Computing source sequence...'.format(its)
+            print('#{0}: Computing source sequence...'.format(its))
             self.estsources(self.M)  # use current M to re-estimate s
         return len(set(self.s))
 
     # computes the probability distribution for the different sequences produced by this model (p(z) or q(z) in the paper)
     def seqprobs(self):
         probs = dict()
-        for k in self.y.iterkeys():
+        for k in self.y.keys():
             z = seq2str(self.y[k])
             if z in probs:
                 probs[z] += 1.0

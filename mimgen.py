@@ -48,7 +48,7 @@ def printseqs():
     T = len(str(ninstances))
     N = len(str(len(symbolseq)))
 
-    # print sequence positions
+    # print(sequence positions)
     for i in reversed(range(1, N+1)):
         factor = int(math.pow(10, i-1))
         last_digit = 0
@@ -63,15 +63,15 @@ def printseqs():
                 else:
                     line += ' '
             last_digit = digit
-        print line
+        print(line)
 
-    # print symbol sequence
+    # print(symbol sequence)
     line = (T+1)*' '
     for symbol in symbolseq:
         line += str(symbol)
-    print line
+    print(line)
 
-    # print sequences for each instance
+    # print(sequences for each instance)
     for i in range(0, ninstances):
         source = i + 1
         line = (T-len(str(source)))*' '
@@ -82,15 +82,15 @@ def printseqs():
                 line += symbolseq[j]
             else:
                 line += '.'
-        print line
+        print(line)
 
-    # print symbol sequence
+    # print(symbol sequence)
     line = (T+1)*' '
     for symbol in symbolseq:
         line += str(symbol)
-    print line
+    print(line)
 
-    # print source for each event
+    # print(source for each event)
     for i in reversed(range(1, T+1)):
         factor = int(math.pow(10, i-1))
         line = (T+1)*' '
@@ -103,7 +103,7 @@ def printseqs():
                     line += str(digit)
                 else:
                     line += ' '
-        print line
+        print(line)
 
     # get the number of simultaneously active sources at each position
     simultaneous = []
@@ -125,7 +125,7 @@ def printseqs():
         if count > max_count:
             max_count = count
 
-    # print the number of active sources at each position
+    # print(the number of active sources at each position)
     for i in reversed(range(1, len(str(max_count))+1)):
         factor = int(math.pow(10, i-1))
         line = (T+1)*' '
@@ -138,18 +138,18 @@ def printseqs():
                     line += str(digit)
                 else:
                     line += ' '
-        print line
+        print(line)
 
 # main routine begins here
 
 
 if len(sys.argv) < 5:
-    print 'Missing overlap value.'
-    print 'Usage: {0} <no.instances> <overlap> <input-file> <output-file>'.format(sys.argv[0])
-    print '  \'no.instances\' specifies the number of instances to be created'
-    print '  \'overlap\' specifies the number of overlapping instances'
-    print '  \'input-file\' is the input file containing the sequences and their weigths'
-    print '  \'output-file\' is the output file where the symbol sequence will be written'
+    print('Missing overlap value.')
+    print('Usage: {0} <no.instances> <overlap> <input-file> <output-file>'.format(sys.argv[0]))
+    print('  \'no.instances\' specifies the number of instances to be created')
+    print('  \'overlap\' specifies the number of overlapping instances')
+    print('  \'input-file\' is the input file containing the sequences and their weigths')
+    print('  \'output-file\' is the output file where the symbol sequence will be written')
     exit()
 
 # read one sequence per line, together with a probability value
@@ -172,12 +172,12 @@ mim.normalize(seqprobs)
 ninstances = int(sys.argv[1])
 if ninstances < 1:
     ninstances = 1
-    print 'using default no. instances = {0}'.format(ninstances)
+    print('using default no. instances = {0}'.format(ninstances))
 
 overlap = int(sys.argv[2])
 if overlap < 1:
     overlap = 1
-    print 'using default overlap = {0}'.format(overlap)
+    print('using default overlap = {0}'.format(overlap))
 
 random.seed()
 
@@ -186,7 +186,7 @@ sequences = dict()
 for k in range(0, ninstances):
     psum = 0.0
     p = random.random()
-    for z in seqprobs.iterkeys():
+    for z in seqprobs.keys():
         psum += seqprobs[z]
         if p < psum:
             sequences[k+1] = z[:]
@@ -204,6 +204,7 @@ while len(sequences) > 0:
     selected = random.randint(0, min(overlap-1, len(sources)-1, upperbound))
     if selected >= upperbound:
         upperbound += 1
+    sources = list(sources)
     source = sources[selected]
     symbol = sequences[source][0]
     symbolseq.append(symbol)
@@ -214,7 +215,7 @@ while len(sequences) > 0:
     else:
         sequences[source] = sequences[source][1:]
 
-# print sequences
+# print(sequences)
 
 printseqs()
 

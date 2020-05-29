@@ -1,6 +1,7 @@
 import random
 import collections
 
+CACHE = {}
 
 def get_normalized_random_values(n):
     probabilities = [random.random() for _ in range(n)]
@@ -10,11 +11,18 @@ def get_normalized_random_values(n):
 
 
 def _eta(symbolA, symbolB, symbol_string: [str]):
-    counter = 0
-    for i in range(len(symbol_string) - 1):
-        if symbol_string[i] == symbolA and symbol_string[i+1] == symbolB:
-            counter += 1
-    return counter
+
+    if symbolA not in CACHE:
+        CACHE[symbolA] = {}
+    if symbolB not in CACHE[symbolA]:
+        counter = 0
+        for i in range(len(symbol_string) - 1):
+            if symbol_string[i] == symbolA and symbol_string[i+1] == symbolB:
+                counter += 1
+            
+        CACHE[symbolA][symbolB] = counter
+
+    return CACHE[symbolA][symbolB]
 
 
 class TransitionMatrix:
@@ -66,13 +74,13 @@ class TransitionMatrix:
         #symbols = ["START"] + list(symbol_string) + ["END"]
         symbols = list(symbol_string)
 
-        for symbolA in symbols:
-            for symbolB in symbols:
+        for symbolA in events:
+            for symbolB in events:
                 if symbolA == symbolB:
                     continue
                 nominator = _eta(symbolA, symbolB, symbols)
                 denominator = 0
-                for symbol_ in symbols:
+                for symbol_ in events:
                     denominator += _eta(symbolA, symbol_, symbols)
                 value = nominator / denominator if denominator > 0 else 0
                 m.set(symbolA, symbolB, value)
