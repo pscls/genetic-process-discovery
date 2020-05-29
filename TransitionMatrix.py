@@ -1,11 +1,13 @@
 import random
 import collections
 
+
 def get_normalized_random_values(n):
     probabilities = [random.random() for _ in range(n)]
     s = sum(probabilities)
     normalized_probabilities = [p / s for p in probabilities]
     return normalized_probabilities
+
 
 def _eta(symbolA, symbolB, symbol_string: [str]):
     counter = 0
@@ -52,7 +54,7 @@ class TransitionMatrix:
             for _event in events:
                 if _event != event:
                     m.set(event, _event, probabilities.pop())
-        
+
         return m
 
     def init_m_plus(events: [str], symbol_string: str):
@@ -60,9 +62,10 @@ class TransitionMatrix:
         # Add all events to matrix - start and stop are already in
         for event in events:
             m.add_event(event)
-        
-        symbols = ["START"] + list(symbol_string) + ["END"]
-        
+
+        #symbols = ["START"] + list(symbol_string) + ["END"]
+        symbols = list(symbol_string)
+
         for symbolA in symbols:
             for symbolB in symbols:
                 if symbolA == symbolB:
@@ -75,7 +78,6 @@ class TransitionMatrix:
                 m.set(symbolA, symbolB, value)
 
         return m
-
 
     def get_symbols(self):
         return list(self.matrix.keys())

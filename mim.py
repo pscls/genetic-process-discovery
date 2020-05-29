@@ -117,7 +117,6 @@ class model:
 
     # print a given transition matrix T
     def printmodel(self, T):
-        print ' '.ljsut(5),
         for a in self.D:
             print a.ljust(5),
         print
@@ -128,9 +127,9 @@ class model:
                     print '-'.ljust(5),
                 else:
                     print '{0:.2f}'.format(T[a][b]).ljust(5),
-            print
 
     # estimate the source sequence s from a given transition matrix T (algorithm 1 in the paper)
+
     def estsources(self, T):
         self.s = []
         self.y = dict()
