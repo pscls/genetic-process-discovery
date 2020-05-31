@@ -38,6 +38,9 @@
 
 from operator import itemgetter
 import math
+import pprint
+pp = pprint.PrettyPrinter(indent=4)
+
 
 # general routine for normalizing probability distributions
 
@@ -50,9 +53,8 @@ def normalize(d):
         for k in d.keys():
             d[k] = d[k] / rowsum
 
+
 # general routine for converting a sequence to string
-
-
 def seq2str(seq):
     string = ''
     for elem in seq:
@@ -61,14 +63,15 @@ def seq2str(seq):
 
 
 # general routine for sorting a dictionary by values
-
-
 def sortbyvalue(d):
-    return sorted(d.items(), key=itemgetter(1), reverse=True)
+    result = []
+    for d_instance in d:
+        result.append(sorted(d_instance.items(),
+                             key=itemgetter(1), reverse=True))
+    return result
+
 
 # routine for computing the G-metric between two MIM models
-
-
 def gmetric(m1, m2):
     pz = m1.seqprobs()
     qz = m2.seqprobs()
@@ -77,6 +80,40 @@ def gmetric(m1, m2):
         if z in qz:
             g += math.sqrt(pz[z]*qz[z])
     return g
+
+
+class model_manager:
+    inactive_models = []  # array of all models that are successfully estimated
+    active_models = []  # number of all currently used models
+    intital_models = 5  # number of initially created models
+
+    def __init__(self, x):
+        for i in range(self.intital_models):
+            # TODO: Initaialize the matrices differently
+            new_model = model(x)
+            self.active_models.append(new_model)
+
+    def estimate(self):
+        results = []
+
+        while len(self.active_models) > 0:
+            # Do one iteration for all models
+            for model in self.active_models:
+                results.append(model.estimate())
+
+            # abortion critera for estimation loop
+            for model in self.active_models:
+                if model.s in model.prevsseqs:
+                    self.active_models.remove(model)
+                    self.inactive_models.append(model)
+
+        return results
+
+    def seqprobs(self):
+        results = []
+        for model in self.inactive_models:
+            results.append(model.seqprobs())
+        return results
 
 
 class model:
@@ -99,11 +136,19 @@ class model:
 
     y = dict()  # the separate source sequences (y^{(k)} in the paper)
 
+    its = 0  # number of executed estimation loops
+
+    prevsseqs = []  # all sequences of the last estimation
+
     # class constructor initializes the global model gM
     def __init__(self, x):
         self.x = x
         self.N = len(self.x)
         self.D = [self.BEGIN] + sorted(set(self.x)) + [self.END]
+        self.initial_estimation()
+
+    # initially estimate gM and s
+    def initial_estimation(self):
         for a in self.D:
             self.gM[a] = dict()
             for b in self.D:
@@ -115,7 +160,10 @@ class model:
         for a in self.D:
             normalize(self.gM[a])
 
-    # printa given transition matrix T
+        self.estsources(self.gM)
+
+    # print given transition matrix T
+
     def printmodel(self, T):
         for a in self.D:
             print(a.ljust(5))
@@ -185,18 +233,18 @@ class model:
 
     # expectation-maximization procedure to estimate s and M iteratively (algorithm 2 in the paper)
     def estimate(self):
-        prevsseqs = []
         print('Initializing source sequence...')
         # start with an estimate of s computed from the global model gM
-        self.estsources(self.gM)
-        its = 0
-        while self.s not in prevsseqs:
-            its += 1
-            print('#{0}: Estimating parameters...'.format(its))
-            self.estparams()  # update transition matrix M
-            prevsseqs.append(self.s[:])
-            print('#{0}: Computing source sequence...'.format(its))
-            self.estsources(self.M)  # use current M to re-estimate s
+
+        # CHANGE: abort iteration when probabilities do not change anymore
+        # while self.s not in prevsseqs:
+        self.its += 1
+        print('#{0}: Estimating parameters...'.format(self.its))
+        self.estparams()  # update transition matrix M
+        self.prevsseqs.append(self.s[:])
+        print('#{0}: Computing source sequence...'.format(self.its))
+        self.estsources(self.M)  # use current M to re-estimate s
+        # pp.pprint(self.M)
         return len(set(self.s))
 
     # computes the probability distribution for the different sequences produced by this model (p(z) or q(z) in the paper)

@@ -55,7 +55,7 @@ print("Symbol sequence: ", mim.seq2str(x))
 print("({0} symbols)".format(len(x)))
 
 # create to be estimated from sequence x
-m = mim.model(x)
+m = mim.model_manager(x)
 
 # estimate model
 K = m.estimate()
@@ -65,7 +65,8 @@ K = m.estimate()
 
 # show the probability distribution of the different sequences in the model
 pz = mim.sortbyvalue(m.seqprobs())
-for z, p in pz:
-    print('{0:.3f} : {1}'.format(p, z))
+for pz_instance in pz:
+    for z, p in pz_instance:
+        print('{0:.3f} : {1}'.format(p, z))
 
 print('Total number of sources: {0}'.format(K))
