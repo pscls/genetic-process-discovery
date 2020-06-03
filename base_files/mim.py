@@ -38,13 +38,8 @@
 
 from operator import itemgetter
 import math
-import pprint
-pp = pprint.PrettyPrinter(indent=4)
-
 
 # general routine for normalizing probability distributions
-
-
 def normalize(d):
     rowsum = 0.0
     for k in d.keys():
@@ -52,7 +47,6 @@ def normalize(d):
     if rowsum > 0.0:
         for k in d.keys():
             d[k] = d[k] / rowsum
-
 
 # general routine for converting a sequence to string
 def seq2str(seq):
@@ -64,11 +58,7 @@ def seq2str(seq):
 
 # general routine for sorting a dictionary by values
 def sortbyvalue(d):
-    result = []
-    for d_instance in d:
-        result.append(sorted(d_instance.items(),
-                             key=itemgetter(1), reverse=True))
-    return result
+    return sorted(d.items(), key=itemgetter(1), reverse=True)
 
 
 # routine for computing the G-metric between two MIM models
@@ -80,40 +70,6 @@ def gmetric(m1, m2):
         if z in qz:
             g += math.sqrt(pz[z]*qz[z])
     return g
-
-
-class model_manager:
-    inactive_models = []  # array of all models that are successfully estimated
-    active_models = []  # number of all currently used models
-    intital_models = 5  # number of initially created models
-
-    def __init__(self, x):
-        for i in range(self.intital_models):
-            # TODO: Initaialize the matrices differently
-            new_model = model(x)
-            self.active_models.append(new_model)
-
-    def estimate(self):
-        results = []
-
-        while len(self.active_models) > 0:
-            # Do one iteration for all models
-            for model in self.active_models:
-                results.append(model.estimate())
-
-            # abortion critera for estimation loop
-            for model in self.active_models:
-                if model.s in model.prevsseqs:
-                    self.active_models.remove(model)
-                    self.inactive_models.append(model)
-
-        return results
-
-    def seqprobs(self):
-        results = []
-        for model in self.inactive_models:
-            results.append(model.seqprobs())
-        return results
 
 
 class model:
@@ -136,35 +92,36 @@ class model:
 
     y = dict()  # the separate source sequences (y^{(k)} in the paper)
 
-    its = 0  # number of executed estimation loops
-
-    prevsseqs = []  # all sequences of the last estimation
-
     # class constructor initializes the global model gM
-    def __init__(self, x):
+    def __init__(self, x, matrix_init_function=None):
         self.x = x
         self.N = len(self.x)
         self.D = [self.BEGIN] + sorted(set(self.x)) + [self.END]
-        self.initial_estimation()
+        
+        # initialize first matrix
+        matrix_init_function = matrix_init_function if matrix_init_function is not None else self._init_with_m_plus
+        self.M = matrix_init_function(self.x, self.N, self.D)
 
-    # initially estimate gM and s
-    def initial_estimation(self):
-        for a in self.D:
-            self.gM[a] = dict()
-            for b in self.D:
-                self.gM[a][b] = 0.0
-        for n in range(0, self.N-1):
-            a = self.x[n]
-            b = self.x[n+1]
-            self.gM[a][b] += 1.0
-        for a in self.D:
-            normalize(self.gM[a])
+        # start with an estimate of s computed from the global model M
+        self.estsources()
 
-        self.estsources(self.gM)
+    def _init_with_m_plus(self, x, N, D):
+        gM = {}
+        for a in D:
+            gM[a] = dict()
+            for b in D:
+                gM[a][b] = 0.0
+        for n in range(0, N-1):
+            a = x[n]
+            b = x[n+1]
+            gM[a][b] += 1.0
+        for a in D:
+            normalize(gM[a])
+        return gM
 
-    # print given transition matrix T
-
-    def printmodel(self, T):
+    # printa given transition matrix T
+    def printmodel(self):
+        T = self.M
         for a in self.D:
             print(a.ljust(5))
         print("")
@@ -177,8 +134,8 @@ class model:
                     print('{0:.2f}'.format(T[a][b]).ljust(5))
 
     # estimate the source sequence s from a given transition matrix T (algorithm 1 in the paper)
-
-    def estsources(self, T):
+    def estsources(self):
+        T = self.M
         self.s = []
         self.y = dict()
         active = set()
@@ -232,20 +189,20 @@ class model:
             normalize(self.M[a])
 
     # expectation-maximization procedure to estimate s and M iteratively (algorithm 2 in the paper)
-    def estimate(self):
-        print('Initializing source sequence...')
-        # start with an estimate of s computed from the global model gM
-
-        # CHANGE: abort iteration when probabilities do not change anymore
-        # while self.s not in prevsseqs:
-        self.its += 1
-        print('#{0}: Estimating parameters...'.format(self.its))
-        self.estparams()  # update transition matrix M
-        self.prevsseqs.append(self.s[:])
-        print('#{0}: Computing source sequence...'.format(self.its))
-        self.estsources(self.M)  # use current M to re-estimate s
-        # pp.pprint(self.M)
-        return len(set(self.s))
+    # def estimate(self):
+    #     prevsseqs = []
+    #     print('Initializing source sequence...')
+    #     # start with an estimate of s computed from the global model gM
+    #     self.estsources(self.gM)
+    #     its = 0
+    #     while self.s not in prevsseqs:
+    #         its += 1
+    #         print('#{0}: Estimating parameters...'.format(its))
+    #         self.estparams()  # update transition matrix M
+    #         prevsseqs.append(self.s[:])
+    #         print('#{0}: Computing source sequence...'.format(its))
+    #         self.estsources(self.M)  # use current M to re-estimate s
+    #     return len(set(self.s))
 
     # computes the probability distribution for the different sequences produced by this model (p(z) or q(z) in the paper)
     def seqprobs(self):
