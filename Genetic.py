@@ -17,6 +17,7 @@ def create_offspring(modelA, modelB):
 
 # Selection
 def rank_models(models, symbol_sequences):
+    # TODO: We could think about implement a tournament process here
     return sorted(models, key=lambda model: evaluate_model(model, symbol_sequences))
 
 # Evaluation
@@ -26,5 +27,5 @@ def evaluate_model(model, symbol_sequences):
     # TODO: Let you magic happen here Anjo...
     #
     # ...your code could be written here :D
-    #
-    return value
+    # return some number, either float [0, 1] or some integer --> doesn't really matter
+    return value 
