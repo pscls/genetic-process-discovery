@@ -145,7 +145,8 @@ def printseqs():
 
 if len(sys.argv) < 5:
     print('Missing overlap value.')
-    print('Usage: {0} <no.instances> <overlap> <input-file> <output-file>'.format(sys.argv[0]))
+    print(
+        'Usage: {0} <no.instances> <overlap> <input-file> <output-file>'.format(sys.argv[0]))
     print('  \'no.instances\' specifies the number of instances to be created')
     print('  \'overlap\' specifies the number of overlapping instances')
     print('  \'input-file\' is the input file containing the sequences and their weigths')
@@ -217,7 +218,7 @@ while len(sequences) > 0:
 
 # print(sequences)
 
-printseqs()
+# printseqs()
 
 # write symbol sequence to output file
 

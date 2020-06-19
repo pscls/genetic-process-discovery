@@ -3,13 +3,18 @@ from Gscore import get_g_score
 import sys
 
 # read symbol sequence x from stdin, with one symbol per line
-symbol_sequence = []
+symbol_sequences = []
 
 sequence_file_path = sys.argv[1]
 with open(sequence_file_path) as file:
     lines = file.readlines()
     for line in lines:
+
+        symbol_sequence = []
+
+        # TODO: append each symbol_sequence to symbol_sequences
         symbol = line.strip()
+
         if len(symbol) > 0:
             symbol_sequence.append(symbol)
 
