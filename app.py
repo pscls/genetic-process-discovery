@@ -9,20 +9,18 @@ sequence_file_path = sys.argv[1]
 with open(sequence_file_path) as file:
     lines = file.readlines()
     for line in lines:
+        symbols = line.strip().split(",")
 
-        symbol_sequence = []
+        # check that the start end endsymbol are not use
+        assert 'x' not in symbols and 'o' not in symbols
 
-        # TODO: append each symbol_sequence to symbol_sequences
-        symbol = line.strip()
+        symbol_sequences.append(symbols)
+        
 
-        if len(symbol) > 0:
-            symbol_sequence.append(symbol)
-
-
-print("({0} symbols loaded)".format(len(symbol_sequence)))
+print(f"[{len(symbol_sequences)} sequences loaded]")
 
 # create to be estimated from symbol_sequence
-ModelManager.create_models(symbol_sequence, 1)
+ModelManager.create_models(symbol_sequences, 6)
 
 # run model epochs
 ModelManager.run(5)

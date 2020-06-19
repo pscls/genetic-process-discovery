@@ -2,9 +2,11 @@
 
 ## generate sequence:
 
-e.g. for generate 100 sources with at most 5 overlapping from the defined model in sequences.txt
+Run: `python3 base_files/mimgen.py <#traces> <#max_overlappings> <sequence_file> <output_file>`
 
-Run: `python3 base_files/mimgen.py 100 5 sequences.txt output.txt`
+## generate multiple sequence:
+
+Run: `python3 generator.py <#traces> <#max_overlappings> <sequence_file> <output_file> <number_of_sequences>`
 
 ## run code with input sequence:
 
