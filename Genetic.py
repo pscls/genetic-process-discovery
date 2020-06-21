@@ -23,12 +23,12 @@ def create_offspring(modelA, modelB):
 
 def rank_models(models, symbol_sequences):
     # TODO: We could think about implement a tournament process here
-    return sorted(models, key=lambda model: evaluate_model(model, symbol_sequences))
+    return sorted(models, key=lambda model: evaluate_model(model, symbol_sequences, models))
 
 # Evaluation
 
 
-def evaluate_model(model, symbol_sequences):
+def evaluate_model(model, symbol_sequences, models):
     # value = random.randint(1, 100)
     # TODO: Let you magic happen here Anjo...
     #
@@ -40,13 +40,15 @@ def evaluate_model(model, symbol_sequences):
     #   Alignment
 
     # return some number, either float [0, 1] or some integer --> doesn't really matter
-    value = token_replay_on_symbol_sequences(model, symbol_sequences)
-    return value
+    value1 = token_replay_on_symbol_sequences(model, symbol_sequences)
+    value2 = token_replay_on_all_estimated_traces(model, models)
+    return value1
+
+# IDEA 1
 
 
 def token_replay_on_symbol_sequences(model, sequences):
     matrix = model.M
-    # estimated_sequences = model.y
 
     places = dict()
 
@@ -91,6 +93,81 @@ def token_replay_on_symbol_sequences(model, sequences):
 
     f = 1-(missing/consumed)-(remaining/produced)
     print(missing, consumed, remaining, produced)
+    print(f)
+    return f
+
+
+def token_replay_on_all_estimated_traces(model, models):
+    matrix = model.M
+    estimated_sequences = model.y
+
+    missing_all = 0.0
+    consumed_all = 0.0
+    remaining_all = 0.0
+    produced_all = 0.0
+
+    for sequence in estimated_sequences:
+        missing = 0.0
+        consumed = 0.0
+        remaining = 0.0
+        produced = 1
+
+        places = dict()
+
+        # initialize places
+        for state in model.D:
+            places[state] = 0
+            if state == model.BEGIN:
+                places['o'] = 1
+
+        # iterate through sequence
+        for i in range(0, len(estimated_sequences[sequence])):
+            event = estimated_sequences[sequence][i]
+            predecessors = get_predecessors(matrix, event)
+            pre_place_prob = 0
+            pre_place = 0
+            for predecessor in predecessors:
+                if predecessors[predecessor] > pre_place_prob:
+                    pre_place_prob = predecessors[predecessor]
+                    pre_place = predecessor
+
+            if pre_place != 0:
+                places[pre_place] -= 1
+                places[event] += 1
+                consumed += 1
+                produced += 1
+            else:
+                missing += 1
+                places[event] += 1
+                consumed += 1
+                produced += 1
+
+        # do it again for the END
+        predecessors = get_predecessors(matrix, model.END)
+        pre_place_prob = 0
+        pre_place = 0
+        for predecessor in predecessors:
+            if predecessors[predecessor] > pre_place_prob:
+                pre_place_prob = predecessors[predecessor]
+                pre_place = predecessor
+        if pre_place != 0:
+            places[pre_place] -= 1
+            consumed += 1
+        else:
+            missing += 1
+            consumed += 1
+
+        places[model.BEGIN] = 0
+        places[model.END] = 0
+        remaining = sum(places.values())
+
+        missing_all = missing
+        consumed_all = consumed
+        remaining_all = remaining
+        produced_all = produced
+
+    f = 1-(missing_all/consumed_all)-(remaining_all/produced_all)
+    print(missing_all, consumed_all, remaining_all, produced_all)
     print(f)
     return f
 
