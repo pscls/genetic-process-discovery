@@ -15,12 +15,12 @@ with open(sequence_file_path) as file:
         assert 'x' not in symbols and 'o' not in symbols
 
         symbol_sequences.append(symbols)
-        
+
 
 print(f"[{len(symbol_sequences)} sequences loaded]")
 
 # create to be estimated from symbol_sequence
-ModelManager.create_models(symbol_sequences, 6)
+ModelManager.create_models(symbol_sequences, 5)
 
 # run model epochs
 ModelManager.run(5)
