@@ -1,24 +1,22 @@
 import sys
-import base_files.mim as mim
 import random
 
-if len(sys.argv) < 6:
+if len(sys.argv) < 5:
     print('Missing overlap value.')
     print(
         'Usage: {0} <no.instances> <overlap> <input-file> <output-file>'.format(sys.argv[0]))
     print('  \'no.instances\' specifies the number of instances to be created')
     print('  \'overlap\' specifies the number of overlapping instances')
-    print('  \'input-file\' is the input file containing the sequences and their weigths')
-    print('  \'output-file\' is the output file where the symbol sequence will be written')
     print('  \'number_of_generations\' how many sequences should be generated from the passed model')
+    print('  \'output-file-name\' is the output file where the symbol sequence will be written')
     exit()
 
 
-number_of_generations = int(sys.argv[5])
+number_of_generations = int(sys.argv[3])
 
 # read one sequence per line, together with a probability value
 
-fin = open(sys.argv[3], 'r')
+fin = open("./data/MODEL_DEFINTION.txt")
 
 seqprobs = dict()
 
@@ -29,9 +27,15 @@ for line in fin:
 
 fin.close()
 
-mim.normalize(seqprobs)
+def normalize(d):
+    rowsum = 0.0
+    for k in d.keys():
+        rowsum = rowsum + d[k]
+    if rowsum > 0.0:
+        for k in d.keys():
+            d[k] = d[k] / rowsum
 
-# select instances to be used
+normalize(seqprobs)
 
 ninstances = int(sys.argv[1])
 if ninstances < 1:
@@ -45,7 +49,7 @@ if overlap < 1:
 
 outputs = []
 
-fout = open(sys.argv[4], 'w')
+fout = open("./data/generated_data/" + sys.argv[4], 'w')
 
 while number_of_generations > 0:
     random.seed()
@@ -89,13 +93,4 @@ while number_of_generations > 0:
     fout.write("\n")
     number_of_generations -= 1
 
-    # print(sequences)
-
-    # printseqs()
-
-    # write symbol sequence to output file
-
-
 fout.close()
-
-# main routine ends here

@@ -8,7 +8,7 @@ varianz = []
 standard_deviation = []
 mins = []
 maxs = []
-with open("gscore.json", "r") as file:
+with open("./data/generated_data/gscore.json", "r") as file:
     gscores = json.load(file)
 
     overlappings = [int(k) for k in gscores.keys()]
@@ -29,7 +29,6 @@ with open("gscore.json", "r") as file:
 
         mins.append(min(values))
         maxs.append(max(values))
-
 
 plt.plot(overlappings, varianz, 'ro', markersize=3, label="varianz")
 plt.plot(overlappings, averages, 'ko', markersize=3, label="average")
