@@ -30,16 +30,12 @@ def rank_models(models, symbol_sequences):
 
 def evaluate_model(model, symbol_sequences, models):
     # value = random.randint(1, 100)
-    # TODO: Let you magic happen here Anjo...
-    #
-    # ...your code could be written here :D
 
     # Strategies:
     #   Behavioral Appropriateness
     #   Token-Replay
     #   Alignment
 
-    # return some number, either float [0, 1] or some integer --> doesn't really matter
     value1 = token_replay_on_symbol_sequences(model, symbol_sequences)
     value2 = token_replay_on_all_estimated_traces(model, models)
     return value1

@@ -59,7 +59,7 @@ if len(sys.argv) < 5:
     exit()
 
 
-fin = open("MODEL_DEFINTION.txt")
+fin = open("./data/MODEL_DEFINTION.txt")
 
 seqprobs = dict()
 

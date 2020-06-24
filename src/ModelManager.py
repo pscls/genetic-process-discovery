@@ -21,6 +21,7 @@ class ModelManager:
         assert number_of_models > 0 and number_of_models <= len(
             symbol_sequences)
 
+        ModelManager.models = []
         ModelManager.symbol_sequences = symbol_sequences
 
         random.shuffle(symbol_sequences)
