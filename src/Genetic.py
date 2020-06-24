@@ -29,7 +29,7 @@ def rank_models(models, symbol_sequences):
 
 
 def evaluate_model(model, symbol_sequences, models):
-    # value = random.randint(1, 100)
+    return random.randint(1, 100)
 
     # Strategies:
     #   Behavioral Appropriateness

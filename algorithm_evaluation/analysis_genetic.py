@@ -16,23 +16,23 @@ with open("./data/MODEL_DEFINTION.txt") as file:
         [trace, prob] = line.split(" ")
         true_probs.append((trace, float(prob)))
 
-for i in range(1, 21):
+for i in range(1, 51):
     print(f"Start: {i}")
     result[i] = []
     with open(f"./data/generated_data/output_{i}.txt") as file:
         lines = file.readlines()
         symbol_sequences = [line.strip().split(",") for line in lines]
-        print(len(symbol_sequences))
 
-        ModelManager.create_models(symbol_sequences, 5)
+        for _ in range(len(symbol_sequences)):
+            ModelManager.create_models(symbol_sequences, 5)
 
-        # run model epochs
-        ModelManager.run(2)
+            # run model epochs
+            ModelManager.run(5)
 
-        # show the probability distribution of the different sequences in the model
-        pred_probs = ModelManager.get_best_model_probility()
+            # show the probability distribution of the different sequences in the model
+            pred_probs = ModelManager.get_best_model_probility()
 
-        result[i].append(get_g_score(pred_probs, true_probs))            
+            result[i].append(get_g_score(pred_probs, true_probs))            
 
 fout = open('./data/generated_data/gscore.json', 'w')
 fout.write(json.dumps(result))
