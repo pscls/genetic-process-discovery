@@ -1,6 +1,6 @@
 import random
 import sys
-from base_files.mim import model as Model
+from base_files_edited.mim import model as Model
 
 
 def create_offspring(modelA, modelB):
@@ -92,8 +92,8 @@ def token_replay_on_symbol_sequences(model, sequences):
         remaining = sum(places.values())
 
     f = 1-(missing/consumed)-(remaining/produced)
-    print(missing, consumed, remaining, produced)
-    print(f)
+    # print(missing, consumed, remaining, produced)
+    # print(f)
     return f
 
 
@@ -167,8 +167,8 @@ def token_replay_on_all_estimated_traces(model, models):
         produced_all = produced
 
     f = 1-(missing_all/consumed_all)-(remaining_all/produced_all)
-    print(missing_all, consumed_all, remaining_all, produced_all)
-    print(f)
+    # print(missing_all, consumed_all, remaining_all, produced_all)
+    # print(f)
     return f
 
 

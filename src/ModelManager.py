@@ -1,4 +1,4 @@
-from base_files.mim import model as Model, sortbyvalue
+from base_files_edited.mim import model as Model, sortbyvalue
 from operator import itemgetter
 from Genetic import create_offspring, rank_models
 import random
@@ -28,12 +28,6 @@ class ModelManager:
         for i in range(number_of_models):
             ModelManager.models.append(Model(symbol_sequences[i]))
         print(f"[{number_of_models} Models Created]")
-
-    # @staticmethod
-    # def train_model(model):
-    #     model.estparams()
-    #     model.estsources()
-    #     return
 
     @staticmethod
     def run(epochs=5):
