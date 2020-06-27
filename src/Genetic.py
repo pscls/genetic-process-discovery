@@ -23,24 +23,25 @@ def create_offspring(modelA, modelB):
 
 def rank_models(models, symbol_sequences):
     # TODO: We could think about implement a tournament process here
-    return sorted(models, key=lambda model: evaluate_model(model, symbol_sequences, models))
+    return sorted(models, key=lambda model: evaluate_model(model, symbol_sequences, models), reverse=True)
 
 # Evaluation
 
 
 def evaluate_model(model, symbol_sequences, models):
-    return random.randint(1, 100)
+    # value = random.randint(1, 100)
 
     # Strategies:
     #   Behavioral Appropriateness
     #   Token-Replay
     #   Alignment
 
-    value1 = token_replay_on_symbol_sequences(model, symbol_sequences)
-    value2 = token_replay_on_all_estimated_traces(model, models)
-    return value1
+    # value = token_replay_on_symbol_sequences(model, symbol_sequences)
+    # value = token_replay_on_all_estimated_traces(model, models)
+    value = overall_trace_probabilities(model, models)
+    return value
 
-# IDEA 1
+# IDEA 1: Token Replay on all unlabeled input sequences
 
 
 def token_replay_on_symbol_sequences(model, sequences):
@@ -91,6 +92,8 @@ def token_replay_on_symbol_sequences(model, sequences):
     # print(missing, consumed, remaining, produced)
     # print(f)
     return f
+
+# Idea 2: Token Replay on all estimated traces from the other models
 
 
 def token_replay_on_all_estimated_traces(model, models):
@@ -174,3 +177,43 @@ def get_predecessors(matrix, event):
         if (matrix[row][event] != 0.0):
             column[row] = matrix[row][event]
     return column
+
+# IDEA 2: sum of probabilities for a trace in the matrix, for all estimated traces
+
+
+def overall_trace_probabilities(model, models):
+    matrix = model.M
+
+    overall_probability_sum = 0
+    probability_count = 0
+
+    for model_instance in models:
+        model_probability_sum = 0
+        # print('model_instance: ')
+        # print(model_instance.y)
+
+        traces = model_instance.y
+        for trace_inst in traces:
+            trace = traces[trace_inst]
+            trace_probability_sum = 0
+
+            for i in range(0, len(trace)):
+                event = trace[i]
+
+                previous_event = trace[i-1] if i != 0 else model_instance.BEGIN
+
+                transition_probability = matrix[previous_event][event]
+
+                trace_probability_sum += transition_probability
+                probability_count += 1
+
+            # probability of the transition from the last event to the END
+            trace_probability_sum += matrix[trace[i-1]
+                                            ][model_instance.END]
+
+            model_probability_sum += trace_probability_sum
+
+        overall_probability_sum += model_probability_sum
+
+    relative_probability = overall_probability_sum/probability_count
+    return relative_probability
