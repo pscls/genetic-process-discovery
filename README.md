@@ -1,7 +1,7 @@
 # genetic-process-discovery
 
 ## generate multiple sequence:
-Run: `python3 gen_data/generator.py <#traces> <#max_overlappings> <number_of_sequences> <output_file_name>`
+Run: `python3 data/generator.py <#traces> <#max_overlappings> <number_of_sequences> <output_file_name>`
 
 ## run code with input sequence:
 Run: `python3 src/app.py <symbol_sequence_file_name>`

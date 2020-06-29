@@ -38,8 +38,58 @@ def evaluate_model(model, symbol_sequences, models):
 
     # value = token_replay_on_symbol_sequences(model, symbol_sequences)
     # value = token_replay_on_all_estimated_traces(model, models)
-    value = overall_trace_probabilities(model, models)
+    #value = overall_trace_probabilities(model, models)
+    value = linked_token_replay(model, symbol_sequences)
     return value
+
+
+def linked_token_replay(model, sequences):
+    matrix = model.M
+
+    missing = 0.0
+    consumed = 0.0
+    remaining = 0.0
+    produced = 0.0
+
+    for sequence in sequences:
+        token_net = {key: [] for key in matrix.keys()}
+
+        token_id = 0
+        start_symbol = sequence[0]
+        
+        for symbol in sequence:
+            if symbol == start_symbol: # add a new token into the net
+                token_net[symbol].append((token_id, 1))
+                token_id += 1
+                produced += 1
+
+            if len(token_net[symbol]) == 0:
+                missing += 1
+                continue
+
+            token_net[symbol] = sorted(token_net[symbol], key=lambda x:x[1], reverse=True)
+            token = token_net[symbol].pop(0) # extract token with highest probability
+
+            # if the token has reached the end, we will remove him and all its duplicates from the net
+            if matrix[symbol][model.END] > 0:
+                consumed += 1
+                for token_key in token_net.keys():
+                    token_net[token_key] = [_token for _token in token_net[token_key] if _token is not token]
+                continue
+            
+            for other_symbol, probability in matrix[symbol].items():
+                if probability > 0:
+                    token_net[other_symbol].append((token, probability))
+
+        # count all remaining tokens in the net
+        all_remaining_tokens = set()
+        for token_key in token_net:
+            for _token in token_net[token_key]:
+                all_remaining_tokens.add(_token[0])
+        remaining += len(all_remaining_tokens)
+
+    f = 1-(missing/consumed)-(remaining/produced)
+    return f
 
 # IDEA 1: Token Replay on all unlabeled input sequences
 

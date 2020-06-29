@@ -66,7 +66,7 @@ class ModelManager:
 
         assert reproduction_number % 2 == 0  # check for even
         assert reproduction_number >= 2  # check for min
-        # assert len(next_generation_models) >= reproduction_number * 1.5 # check if we have enough models to through away and still do reproduction
+        assert len(next_generation_models) >= reproduction_number * 1.5 # check if we have enough models to through away and still do reproduction
 
         # remove weakest models which will the be replaces by offsprings
         next_generation_models = next_generation_models[:-int(

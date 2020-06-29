@@ -23,11 +23,11 @@ for i in range(1, 51):
         lines = file.readlines()
         symbol_sequences = [line.strip().split(",") for line in lines]
 
-        for _ in range(len(symbol_sequences)):
-            ModelManager.create_models(symbol_sequences, 5)
+        for _ in range(3):
+            ModelManager.create_models(symbol_sequences, 7)
 
             # run model epochs
-            ModelManager.run(5)
+            ModelManager.run(10)
 
             # show the probability distribution of the different sequences in the model
             pred_probs = ModelManager.get_best_model_probility()
