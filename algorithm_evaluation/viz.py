@@ -21,10 +21,11 @@ with open("./data/generated_data/gscore.json", "r") as file:
 
         v = 0
         for v_ in values:
-            v += (v_ - average)**2
+            v += (100*v_ - 100*average)**2
         v /= len(values)
-        variance.append(v)
-        standard_deviation.append(math.sqrt(v))
+
+        variance.append(v/1000)
+        standard_deviation.append(math.sqrt(v)/1000)
 
         mins.append(min(values))
         maxs.append(max(values))
