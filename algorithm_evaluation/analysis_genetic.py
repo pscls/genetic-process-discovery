@@ -5,6 +5,7 @@ sys.path.append(os.path.abspath(__file__ + "/../../src")) # HACKY
 from ModelManager import ModelManager
 from Gscore import get_g_score
 import json
+import threading
 
 result = {}
 
@@ -16,23 +17,36 @@ with open("./data/MODEL_DEFINTION.txt") as file:
         [trace, prob] = line.split(" ")
         true_probs.append((trace, float(prob)))
 
+def genetic_magic(symbol_sequences, true_probs):
+    manager = ModelManager(symbol_sequences, 10)
+
+    # run model epochs
+    manager.run(5)
+
+    # show the probability distribution of the different sequences in the model
+    pred_probs = manager.get_best_model_probility()
+
+    return get_g_score(pred_probs, true_probs)
+
 for i in range(1, 51):
-    print(f"Start: {i}")
+    print(f"Start-Overlapping: {i}")
     result[i] = []
     with open(f"./data/generated_data/output_{i}.txt") as file:
         lines = file.readlines()
         symbol_sequences = [line.strip().split(",") for line in lines]
 
-        for _ in range(3):
-            ModelManager.create_models(symbol_sequences, 7)
+        results_list = []
+        threads_list = []
 
-            # run model epochs
-            ModelManager.run(10)
+        for _ in range(10): #generate n g-scores
+            t = threading.Thread(target=lambda q, arg1, arg2: q.append(genetic_magic(arg1, arg2)), args=(results_list, symbol_sequences, true_probs))
+            t.start()
+            threads_list.append(t)
 
-            # show the probability distribution of the different sequences in the model
-            pred_probs = ModelManager.get_best_model_probility()
+        for t in threads_list:
+            t.join()
 
-            result[i].append(get_g_score(pred_probs, true_probs))            
+        result[i] = results_list
 
 fout = open('./data/generated_data/gscore.json', 'w')
 fout.write(json.dumps(result))
