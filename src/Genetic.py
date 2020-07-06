@@ -18,6 +18,34 @@ def create_offspring(modelA, modelB):
     offspring_model = Model("", lambda _, __, ___: offspring_matrix)
     return offspring_model
 
+def mutate(model):
+    model_mutation_prob = 0.3 # probability that a model gets mutated
+    value_mutation_prob = 0.3 # probability that a value gets mutated
+    value_mutation_range = 0.2 # range of value mutation = [1-x, 1+x]
+
+    if random.random() > model_mutation_prob:
+        return model
+
+    mutated_matrix = model.M
+    for keyA in mutated_matrix:
+        rowsum = 0.0
+        
+        # mutate values
+        for keyB in mutated_matrix[keyA]:
+            if random.random() > value_mutation_prob:
+                continue
+            
+            mutated_matrix[keyA][keyB] *= random.uniform(1-value_mutation_range, 1+value_mutation_range)
+            rowsum += mutated_matrix[keyA][keyB]
+
+        # normalize values after mutation
+        if rowsum > 0:
+            for keyB in mutated_matrix[keyA]:
+                mutated_matrix[keyA][keyB] /= rowsum
+    
+    model.M = mutated_matrix
+    return model
+
 # Selection
 
 

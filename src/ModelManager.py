@@ -1,6 +1,6 @@
 from base_files_edited.mim import model as Model, sortbyvalue
 from operator import itemgetter
-from Genetic import create_offspring, rank_models
+from Genetic import create_offspring, rank_models, mutate
 import random
 import math
 
@@ -74,6 +74,10 @@ class ModelManager:
             offspring = create_offspring(
                 next_generation_models[i], next_generation_models[i+1])
             next_generation_models.append(offspring)
+
+        # mutate models
+        print("Mutate")
+        next_generation_models = [mutate(model) for model in next_generation_models]
 
         self.models = next_generation_models
 
