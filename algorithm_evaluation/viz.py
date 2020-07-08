@@ -32,18 +32,17 @@ with open("./data/generated_data/gscore.json", "r") as file:
 
 plt.plot(overlappings, variance, 'ro', markersize=3, label="variance")
 plt.plot(overlappings, averages, 'ko', markersize=3, label="average")
-plt.plot(overlappings, mins, 'go', markersize=3, label="min")
-plt.plot(overlappings, maxs, 'bo', markersize=3, label="max")
-plt.plot(overlappings, standard_deviation, 'yo',
-         markersize=3, label="standard deviation")
+# plt.plot(overlappings, mins, 'go', markersize=3, label="min")
+# plt.plot(overlappings, maxs, 'bo', markersize=3, label="max")
+# plt.plot(overlappings, standard_deviation, 'yo', markersize=3, label="standard deviation")
 plt.axis([min(overlappings) - 1, max(overlappings) + 1, -0.01, 1.01])
 plt.xlabel('#Overlapping Sources')
 
 plt.legend(handles=[
     mpatches.Patch(color='red', label='variance'),
-    mpatches.Patch(color='yellow', label='standard deviation'),
-    mpatches.Patch(color='green', label='min'),
-    mpatches.Patch(color='blue', label='max'),
+    # mpatches.Patch(color='yellow', label='standard deviation'),
+    # mpatches.Patch(color='green', label='min'),
+    # mpatches.Patch(color='blue', label='max'),
     mpatches.Patch(color='black', label='average')
 ])
 plt.show()

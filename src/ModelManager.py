@@ -1,6 +1,7 @@
 from base_files_edited.mim import model as Model, sortbyvalue
 from operator import itemgetter
-from Genetic import create_offspring, rank_models, mutate
+from Genetic import create_offspring, rank_models, mutate, create_random_model
+from Gscore import get_g_score
 import random
 import math
 
@@ -25,7 +26,7 @@ class ModelManager:
         random.shuffle(self.symbol_sequences)
         # Intialize Models, each with a different input symbol sequence
         for i in range(number_of_models):
-            self.models.append(Model(self.symbol_sequences[i]))
+            self.models.append(mutate(Model(self.symbol_sequences[i]), force_mutation=True))
         # print(f"[{number_of_models} Models Created]")
 
     def run(self, epochs=5):
@@ -52,7 +53,20 @@ class ModelManager:
                 model.N = len(model.x)
                 model.D = ["o"] + sorted(set(model.x)) + ["x"]
 
+            self.models.append(create_random_model(random.choice(self.symbol_sequences)))
+            self.models.append(create_random_model(random.choice(self.symbol_sequences)))
+
             epochs -= 1
+
+            # with open("./data/MODEL_DEFINTION.txt") as file:
+            #     lines = file.readlines()
+            #     true_probs = []
+            #     for line in lines:
+            #         line = line.strip()
+            #         [trace, prob] = line.split(" ")
+            #         true_probs.append((trace, float(prob)))
+            #     print(f"G-Score: {get_g_score(self.get_best_model_probility(), true_probs)}")
+
         return
 
     def darwinism(self):
@@ -76,7 +90,6 @@ class ModelManager:
             next_generation_models.append(offspring)
 
         # mutate models
-        print("Mutate")
         next_generation_models = [mutate(model) for model in next_generation_models]
 
         self.models = next_generation_models

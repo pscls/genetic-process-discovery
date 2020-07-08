@@ -20,13 +20,13 @@ with open(sequence_file_path) as file:
 print(f"[{len(symbol_sequences)} sequences loaded]")
 
 # create to be estimated from symbol_sequence
-ModelManager.create_models(symbol_sequences, 10)
+manager = ModelManager(symbol_sequences, 10)
 
 # run model epochs
-ModelManager.run(10)
+manager.run(10)
 
 # show the probability distribution of the different sequences in the model
-pred_probs = ModelManager.get_best_model_probility()
+pred_probs = manager.get_best_model_probility()
 # print(pred_probs)
 
 

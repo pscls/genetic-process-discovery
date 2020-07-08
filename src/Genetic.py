@@ -3,6 +3,32 @@ import sys
 from base_files_edited.mim import model as Model
 
 
+def create_random_model(sequence):
+    # first: create a normal model
+    model = Model(sequence)
+    
+    # second: overwrite matrix with a random one
+    matrix = model.M
+
+    for keyA in matrix:
+        if keyA == Model.BEGIN:
+            # we do not want to randomize the start at this point
+            continue
+
+        row_sum = 0.0
+        for keyB in matrix[keyA]:
+            random_value = random.random()
+            row_sum += random_value
+            matrix[keyA][keyB] = random_value
+        
+        # normalize matrix
+        for keyB in matrix[keyA]:
+            matrix[keyA][keyB] /= row_sum
+
+    model.M = matrix
+    return model
+
+
 def create_offspring(modelA, modelB):
     matrixA = modelA.M
     matrixB = modelB.M
@@ -16,9 +42,10 @@ def create_offspring(modelA, modelB):
 
     # we will not add a symbol sequence for the new Model
     offspring_model = Model("", lambda _, __, ___: offspring_matrix)
-    return offspring_model
 
-def mutate(model):
+    return mutate(offspring_model, force_mutation=True)
+
+def mutate(model, force_mutation=False):
     model_mutation_prob = 0.3 # probability that a model gets mutated
     value_mutation_prob = 0.3 # probability that a value gets mutated
     value_mutation_range = 0.2 # range of value mutation = [1-x, 1+x]
@@ -35,6 +62,7 @@ def mutate(model):
             if random.random() > value_mutation_prob:
                 continue
             
+            # zero values will stay zero
             mutated_matrix[keyA][keyB] *= random.uniform(1-value_mutation_range, 1+value_mutation_range)
             rowsum += mutated_matrix[keyA][keyB]
 
@@ -64,10 +92,10 @@ def evaluate_model(model, symbol_sequences, models):
     #   Token-Replay
     #   Alignment
 
-    # value = token_replay_on_symbol_sequences(model, symbol_sequences)
+    # value = token_replay_on_symbol_sequences(model, random.choices(symbol_sequences, k=20))
     # value = token_replay_on_all_estimated_traces(model, models)
-    #value = overall_trace_probabilities(model, models)
-    value = linked_token_replay(model, symbol_sequences)
+    value = overall_trace_probabilities(model, models)
+    # value = linked_token_replay(model, random.choices(symbol_sequences, k=20))
     return value
 
 

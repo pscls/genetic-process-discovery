@@ -18,10 +18,10 @@ with open("./data/MODEL_DEFINTION.txt") as file:
         true_probs.append((trace, float(prob)))
 
 def genetic_magic(symbol_sequences, true_probs):
-    manager = ModelManager(symbol_sequences, 6)
+    manager = ModelManager(symbol_sequences, 10)
 
     # run model epochs
-    manager.run(3)
+    manager.run(10)
 
     # show the probability distribution of the different sequences in the model
     pred_probs = manager.get_best_model_probility()
@@ -38,11 +38,11 @@ for i in range(1, 51):
         results_list = []
         threads_list = []
 
-        for _ in range(1): #generate n g-scores
+        for _ in range(100): #generate n g-scores
             t = threading.Thread(target=lambda q, arg1, arg2: q.append(genetic_magic(arg1, arg2)), args=(results_list, symbol_sequences, true_probs))
             t.start()
             threads_list.append(t)
-
+        completed_threads = 0
         for t in threads_list:
             t.join()
 
