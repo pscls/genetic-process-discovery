@@ -360,3 +360,42 @@ def overall_trace_probabilities(model, models):
 
     relative_probability = overall_probability_sum/probability_count
     return relative_probability
+
+def normalized_overall_trace_probabilities(model, models):
+    matrix = model.M
+
+    overall_probability_sum = 0
+    model_count = 0
+
+    for model_instance in models:
+        model_probability_sum = 0
+        trace_count = 0
+
+        traces = model_instance.y
+        for trace_inst in traces:
+            trace = traces[trace_inst]
+            trace_probability_sum = 0
+
+            for i in range(0, len(trace)):
+                event = trace[i]
+
+                previous_event = trace[i-1] if i != 0 else model_instance.BEGIN
+
+                transition_probability = matrix[previous_event][event]
+
+                trace_probability_sum += transition_probability
+                trace_count += 1
+
+            # probability of the transition from the last event to the END
+            trace_probability_sum += matrix[trace[i-1]
+                                            ][model_instance.END]
+
+            model_probability_sum += trace_probability_sum
+
+        normalized_model_sum = 1-((1-model_probability_sum)**2)
+
+        overall_probability_sum += normalized_model_sum
+        model_count += 1
+
+    relative_probability = overall_probability_sum/model_count
+    return relative_probability
