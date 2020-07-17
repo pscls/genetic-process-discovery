@@ -38,11 +38,11 @@ plt.plot(overlappings, averages, 'ko', markersize=3, label="average")
 plt.axis([min(overlappings) - 1, max(overlappings) + 1, -0.01, 1.01])
 plt.xlabel('#Overlapping Sources')
 
-plt.legend(handles=[
-    mpatches.Patch(color='red', label='variance'),
-    # mpatches.Patch(color='yellow', label='standard deviation'),
-    # mpatches.Patch(color='green', label='min'),
-    # mpatches.Patch(color='blue', label='max'),
-    mpatches.Patch(color='black', label='average')
-])
+# plt.legend(handles=[
+#     mpatches.Patch(color='red', label='variance'),
+#     # mpatches.Patch(color='yellow', label='standard deviation'),
+#     # mpatches.Patch(color='green', label='min'),
+#     # mpatches.Patch(color='blue', label='max'),
+#     mpatches.Patch(color='black', label='average')
+# ])
 plt.show()

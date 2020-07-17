@@ -33,13 +33,16 @@ class ModelManager:
         assert epochs > 0
         assert len(self.models) > 0
 
-        for epoch in range(1, epochs + 1):
+        current_epoch = 1
+        while True:
             # print(f"Running Epoch: {epoch}")
 
             # Estimate traces
             for model in self.models:
                 model.estsources()
                 model.estparams()
+                if current_epoch == epochs:
+                    return
 
             # Execute Genetic Step - Selection, Reproduction and Mutation
             # ModelManager.models will be overwritten with next generation models
@@ -56,16 +59,7 @@ class ModelManager:
             self.models.append(create_random_model(random.choice(self.symbol_sequences)))
             self.models.append(create_random_model(random.choice(self.symbol_sequences)))
 
-            epochs -= 1
-
-            # with open("./data/MODEL_DEFINTION.txt") as file:
-            #     lines = file.readlines()
-            #     true_probs = []
-            #     for line in lines:
-            #         line = line.strip()
-            #         [trace, prob] = line.split(" ")
-            #         true_probs.append((trace, float(prob)))
-            #     print(f"G-Score: {get_g_score(self.get_best_model_probility(), true_probs)}")
+            current_epoch += 1
 
         return
 

@@ -1,6 +1,9 @@
 import random
 import sys
 from base_files_edited.mim import model as Model
+from Gscore import get_g_score
+from operator import itemgetter
+import json
 
 
 def create_random_model(sequence):
@@ -74,12 +77,33 @@ def mutate(model, force_mutation=False):
     model.M = mutated_matrix
     return model
 
+def save_gscore_for_models(models):
+    with open("./data/MODEL_DEFINTION.txt") as file:
+        lines = file.readlines()
+        true_probs = []
+        for line in lines:
+            line = line.strip()
+            [trace, prob] = line.split(" ")
+            true_probs.append((trace, float(prob)))
+        
+        
+        gscores = [get_g_score(sorted(model.seqprobs().items(), key=itemgetter(1), reverse=True), true_probs) for model in models]
+        fout = open('./data/generated_data/gscore_overall_trace_probabilities.json', 'a+')
+        fout.write(json.dumps(gscores) + '\n')
+        fout.close()
+        
+        # print(f"G-Score: {get_g_score(self.get_best_model_probility(), true_probs)}")
+
 # Selection
 
 
 def rank_models(models, symbol_sequences):
     # TODO: We could think about implement a tournament process here
-    return sorted(models, key=lambda model: evaluate_model(model, symbol_sequences, models), reverse=True)
+    ranked_models = sorted(models, key=lambda model: evaluate_model(model, symbol_sequences, models), reverse=True)
+    
+    #save_gscore_for_models(ranked_models)
+
+    return ranked_models
 
 # Evaluation
 
@@ -94,9 +118,22 @@ def evaluate_model(model, symbol_sequences, models):
 
     # value = token_replay_on_symbol_sequences(model, random.choices(symbol_sequences, k=20))
     # value = token_replay_on_all_estimated_traces(model, models)
-    value = overall_trace_probabilities(model, models)
+    # value = overall_trace_probabilities(model, models)
     # value = linked_token_replay(model, random.choices(symbol_sequences, k=20))
+    value = g_score(model, models)
     return value
+
+def g_score(main_model, models):
+
+    main_model_traces = sorted(main_model.seqprobs().items(), key=itemgetter(1), reverse=True)
+
+    score = 0.0
+    for model in models:
+        model_traces = sorted(model.seqprobs().items(), key=itemgetter(1), reverse=True)
+        score += get_g_score(main_model_traces, model_traces)
+
+    return score / len(models)
+
 
 
 def linked_token_replay(model, sequences):
