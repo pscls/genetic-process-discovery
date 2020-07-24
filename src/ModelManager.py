@@ -8,25 +8,24 @@ import math
 
 class ModelManager:
     models = []
-    symbol_sequences = []
+    symbol_sequence = ''
 
-    def __init__(self, symbol_sequences, number_of_models=-1):
+    def __init__(self, symbol_sequence, number_of_models=-1):
 
         # if no specefic value was passed take the default value of one model per 10 input strings
         if number_of_models < 0:
-            number_of_models = math.ceil(len(symbol_sequences) / 10)
+            number_of_models = math.ceil(len(symbol_sequence) / 10)
 
-        assert len(symbol_sequences) > 0
-        assert number_of_models > 0 and number_of_models <= len(
-            symbol_sequences)
+        # assert len(symbol_sequence) > 0
+        # assert number_of_models > 0 and number_of_models <= len(
+        #     symbol_sequence)
 
         self.models = []
-        self.symbol_sequences = symbol_sequences
+        self.symbol_sequence = symbol_sequence
 
-        random.shuffle(self.symbol_sequences)
         # Intialize Models, each with a different input symbol sequence
         for i in range(number_of_models):
-            self.models.append(mutate(Model(self.symbol_sequences[i]), force_mutation=True))
+            self.models.append(mutate(Model(self.symbol_sequence), force_mutation=True))
         # print(f"[{number_of_models} Models Created]")
 
     def run(self, epochs=5):
@@ -49,15 +48,15 @@ class ModelManager:
             self.darwinism()
 
             # Assign new input string to each Model for next epoch
-            random.shuffle(self.symbol_sequences)
-            for i in range(len(self.models)):
-                model = self.models[i]
-                model.x = self.symbol_sequences[i]
-                model.N = len(model.x)
-                model.D = ["o"] + sorted(set(model.x)) + ["x"]
+            # random.shuffle(self.symbol_sequence)
+            # for i in range(len(self.models)):
+            #     model = self.models[i]
+            #     model.x = self.symbol_sequence[i]
+            #     model.N = len(model.x)
+            #     model.D = ["o"] + sorted(set(model.x)) + ["x"]
 
-            # self.models.append(create_random_model(random.choice(self.symbol_sequences)))
-            # self.models.append(create_random_model(random.choice(self.symbol_sequences)))
+            # self.models.append(create_random_model(random.choice(self.symbol_sequence)))
+            # self.models.append(create_random_model(random.choice(self.symbol_sequence)))
 
             current_epoch += 1
 
@@ -65,7 +64,7 @@ class ModelManager:
 
     def darwinism(self):
         next_generation_models = rank_models(
-            self.models, self.symbol_sequences)
+            self.models, self.symbol_sequence)
         reproduction_number = 4  # Handle as hyper-param
 
         assert reproduction_number % 2 == 0  # check for even
