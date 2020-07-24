@@ -3,7 +3,7 @@ import matplotlib.patches as mpatches
 import json
 import math
 
-with open("./data/generated_data/gscore_overall_trace_probabilities.json", "r") as file:
+with open("./data/generated_data/gscore_wight_function.json", "r") as file:
     lines = file.readlines() 
 
     for line in lines:
@@ -12,5 +12,9 @@ with open("./data/generated_data/gscore_overall_trace_probabilities.json", "r") 
     
         # for i in range(len(gscores)):
         #     plt.scatter(i, gscores[i])
+    
+    plt.xticks([0, 5, 10, 15, 19])
 
+    plt.xlabel("List Index")
+    plt.ylabel("G-score")
     plt.show()

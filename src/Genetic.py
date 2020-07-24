@@ -88,7 +88,7 @@ def save_gscore_for_models(models):
         
         
         gscores = [get_g_score(sorted(model.seqprobs().items(), key=itemgetter(1), reverse=True), true_probs) for model in models]
-        fout = open('./data/generated_data/gscore_overall_trace_probabilities.json', 'a+')
+        fout = open('./data/generated_data/gscore_wight_function.json', 'a+')
         fout.write(json.dumps(gscores) + '\n')
         fout.close()
         
@@ -101,7 +101,7 @@ def rank_models(models, symbol_sequences):
     # TODO: We could think about implement a tournament process here
     ranked_models = sorted(models, key=lambda model: evaluate_model(model, symbol_sequences, models), reverse=True)
     
-    #save_gscore_for_models(ranked_models)
+    save_gscore_for_models(ranked_models)
 
     return ranked_models
 
@@ -116,11 +116,12 @@ def evaluate_model(model, symbol_sequences, models):
     #   Token-Replay
     #   Alignment
 
-    # value = token_replay_on_symbol_sequences(model, random.choices(symbol_sequences, k=20))
-    # value = token_replay_on_all_estimated_traces(model, models)
+    #value = token_replay_on_symbol_sequences(model, random.choices(symbol_sequences, k=20))
+    #value = token_replay_on_all_estimated_traces(model, models)
     # value = overall_trace_probabilities(model, models)
-    # value = linked_token_replay(model, random.choices(symbol_sequences, k=20))
-    value = g_score(model, models)
+    #value = linked_token_replay(model, random.choices(symbol_sequences, k=20))
+    #value = g_score(model, models)
+    #value = random.random()
     return value
 
 def g_score(main_model, models):

@@ -56,8 +56,8 @@ class ModelManager:
                 model.N = len(model.x)
                 model.D = ["o"] + sorted(set(model.x)) + ["x"]
 
-            self.models.append(create_random_model(random.choice(self.symbol_sequences)))
-            self.models.append(create_random_model(random.choice(self.symbol_sequences)))
+            # self.models.append(create_random_model(random.choice(self.symbol_sequences)))
+            # self.models.append(create_random_model(random.choice(self.symbol_sequences)))
 
             current_epoch += 1
 
@@ -84,7 +84,7 @@ class ModelManager:
             next_generation_models.append(offspring)
 
         # mutate models
-        next_generation_models = [mutate(model) for model in next_generation_models]
+        next_generation_models = [mutate(model, force_mutation=True) for model in next_generation_models]
 
         self.models = next_generation_models
 
