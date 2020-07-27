@@ -20,7 +20,6 @@ with open("./data/MODEL_DEFINTION.txt") as file:
 def genetic_magic(symbol_sequences, true_probs):
     # take only the first symbol_sequence, should be done for every one later
     symbol_sequence = symbol_sequences[0]
-    print(symbol_sequence)
     manager = ModelManager(symbol_sequence, 20)
 
     # run model epochs
