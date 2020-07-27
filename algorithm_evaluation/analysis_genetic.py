@@ -17,9 +17,9 @@ with open("./data/MODEL_DEFINTION.txt") as file:
         [trace, prob] = line.split(" ")
         true_probs.append((trace, float(prob)))
 
-def genetic_magic(symbol_sequences, true_probs):
+def genetic_magic(symbol_sequence, true_probs):
     # take only the first symbol_sequence, should be done for every one later
-    symbol_sequence = symbol_sequences[0]
+    # symbol_sequence = symbol_sequences[0]
     manager = ModelManager(symbol_sequence, 20)
 
     # run model epochs
@@ -36,18 +36,26 @@ for i in range(1, 51):
     with open(f"./data/generated_data/output_{i}.txt") as file:
         lines = file.readlines()
         symbol_sequences = [line.strip().split(",") for line in lines]
-
         results_list = []
-        threads_list = []
+        idx = 1
 
-        for _ in range(1): #generate n g-scores
-            t = threading.Thread(target=lambda q, arg1, arg2: q.append(genetic_magic(arg1, arg2)), args=(results_list, symbol_sequences, true_probs))
-            t.start()
-            threads_list.append(t)
-        completed_threads = 0
-        for t in threads_list:
-            t.join()
+        for symbol_sequence in symbol_sequences:
+            print(f"    Start-Sequence: {idx}")
+            idx += 1
 
+            sequence_result = []
+            threads_list = []
+    
+            for _ in range(1): #generate n g-scores
+                t = threading.Thread(target=lambda q, arg1, arg2: q.append(genetic_magic(arg1, arg2)), args=(sequence_result, symbol_sequence, true_probs))
+                t.start()
+                threads_list.append(t)
+            completed_threads = 0
+            for t in threads_list:
+                t.join()
+
+            results_list.append(sequence_result[0])
+    
         result[i] = results_list
 
 fout = open('./data/generated_data/gscore.json', 'w')
