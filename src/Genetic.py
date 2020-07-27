@@ -101,7 +101,7 @@ def rank_models(models, symbol_sequences):
     # TODO: We could think about implement a tournament process here
     ranked_models = sorted(models, key=lambda model: evaluate_model(model, symbol_sequences, models), reverse=True)
     
-    save_gscore_for_models(ranked_models)
+    # save_gscore_for_models(ranked_models)
 
     return ranked_models
 
@@ -120,7 +120,7 @@ def evaluate_model(model, symbol_sequences, models):
     #value = token_replay_on_all_estimated_traces(model, models)
     # value = overall_trace_probabilities(model, models)
     #value = linked_token_replay(model, random.choices(symbol_sequences, k=20))
-    #value = g_score(model, models)
+    value = g_score(model, models)
     #value = random.random()
     return value
 

@@ -18,7 +18,9 @@ with open("./data/MODEL_DEFINTION.txt") as file:
         true_probs.append((trace, float(prob)))
 
 def genetic_magic(symbol_sequences, true_probs):
-    manager = ModelManager(symbol_sequences, 20)
+    # take only the first symbol_sequence, should be done for every one later
+    symbol_sequence = symbol_sequences[0]
+    manager = ModelManager(symbol_sequence, 20)
 
     # run model epochs
     manager.run(10)
