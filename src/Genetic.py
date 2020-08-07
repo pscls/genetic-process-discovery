@@ -53,7 +53,7 @@ def mutate(model, force_mutation=False):
     value_mutation_prob = 0.3 # probability that a value gets mutated
     value_mutation_range = 0.2 # range of value mutation = [1-x, 1+x]
 
-    if random.random() > model_mutation_prob:
+    if not force_mutation and random.random() > model_mutation_prob:
         return model
 
     mutated_matrix = model.M
@@ -62,7 +62,7 @@ def mutate(model, force_mutation=False):
         
         # mutate values
         for keyB in mutated_matrix[keyA]:
-            if random.random() > value_mutation_prob:
+            if not force_mutation and random.random() > value_mutation_prob:
                 continue
             
             # zero values will stay zero

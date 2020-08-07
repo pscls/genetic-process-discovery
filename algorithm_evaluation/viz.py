@@ -37,6 +37,7 @@ plt.plot(overlappings, averages, 'ko', markersize=3, label="average")
 # plt.plot(overlappings, standard_deviation, 'yo', markersize=3, label="standard deviation")
 plt.axis([min(overlappings) - 1, max(overlappings) + 1, -0.01, 1.01])
 plt.xlabel('#Overlapping Sources')
+plt.ylabel('Gscore')
 
 # plt.legend(handles=[
 #     mpatches.Patch(color='red', label='variance'),
