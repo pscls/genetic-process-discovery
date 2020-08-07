@@ -55,8 +55,8 @@ class ModelManager:
             #     model.N = len(model.x)
             #     model.D = ["o"] + sorted(set(model.x)) + ["x"]
 
-            # self.models.append(create_random_model(random.choice(self.symbol_sequence)))
-            # self.models.append(create_random_model(random.choice(self.symbol_sequence)))
+            self.models.append(create_random_model(random.choice(self.symbol_sequence)))
+            self.models.append(create_random_model(random.choice(self.symbol_sequence)))
 
             current_epoch += 1
 
