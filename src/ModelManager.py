@@ -21,6 +21,9 @@ class ModelManager:
         assert number_of_models > 0 and number_of_models <= len(
             symbol_sequences)
 
+
+        assert len(symbol_sequences) == 10
+
         self.models = []
         self.symbol_sequences = symbol_sequences
 

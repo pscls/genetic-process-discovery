@@ -100,7 +100,14 @@ while number_of_generations > 0:
 
     sequences = dict()
 
-    for k in range(0, ninstances):
+    # =============== The code below is added/changed by us =============== #
+    i_ = 0
+    for z in seqprobs.keys():
+        sequences[i_] = z[:]
+        i_ += 1
+
+    for k in range(len(seqprobs), ninstances):
+    # =============== The code above is added/changed by us =============== #
         psum = 0.0
         p = random.random()
         for z in seqprobs.keys():
