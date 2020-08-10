@@ -9,23 +9,25 @@ import math
 class ModelManager:
     models = []
     symbol_sequence = ''
+    symbol_sequences = []
 
-    def __init__(self, symbol_sequence, number_of_models=-1):
+    def __init__(self, symbol_sequences, number_of_models=-1):
 
         # if no specefic value was passed take the default value of one model per 10 input strings
         if number_of_models < 0:
-            number_of_models = math.ceil(len(symbol_sequence) / 10)
+            number_of_models = math.ceil(len(symbol_sequences) / 10)
 
-        # assert len(symbol_sequence) > 0
-        # assert number_of_models > 0 and number_of_models <= len(
-        #     symbol_sequence)
+        assert len(symbol_sequences) > 0
+        assert number_of_models > 0 and number_of_models <= len(
+            symbol_sequences)
 
         self.models = []
-        self.symbol_sequence = symbol_sequence
+        self.symbol_sequences = symbol_sequences
 
         # Intialize Models, each with a different input symbol sequence
-        for i in range(number_of_models):
-            self.models.append(mutate(Model(self.symbol_sequence), force_mutation=True))
+        number_of_models = len(symbol_sequences)
+        for index in range(number_of_models):
+            self.models.append(Model(self.symbol_sequences[index]))
         # print(f"[{number_of_models} Models Created]")
 
     def run(self, epochs=5):
@@ -33,30 +35,27 @@ class ModelManager:
         assert len(self.models) > 0
 
         current_epoch = 1
-        while True:
-            # print(f"Running Epoch: {epoch}")
+        while current_epoch <= epochs:
 
             # Estimate traces
             for model in self.models:
                 model.estsources()
                 model.estparams()
-                if current_epoch == epochs:
-                    return
 
             # Execute Genetic Step - Selection, Reproduction and Mutation
             # ModelManager.models will be overwritten with next generation models
             self.darwinism()
 
             # Assign new input string to each Model for next epoch
-            # random.shuffle(self.symbol_sequence)
-            # for i in range(len(self.models)):
-            #     model = self.models[i]
-            #     model.x = self.symbol_sequence[i]
-            #     model.N = len(model.x)
-            #     model.D = ["o"] + sorted(set(model.x)) + ["x"]
+            random.shuffle(self.symbol_sequences)
+            for i in range(len(self.models)):
+                model = self.models[i]
+                model.x = self.symbol_sequences[i]
+                model.N = len(model.x)
+                model.D = ["o"] + sorted(set(model.x)) + ["x"]
 
-            self.models.append(create_random_model(random.choice(self.symbol_sequence)))
-            self.models.append(create_random_model(random.choice(self.symbol_sequence)))
+            # self.models.append(create_random_model(random.choice(self.symbol_sequence)))
+            # self.models.append(create_random_model(random.choice(self.symbol_sequence)))
 
             current_epoch += 1
 

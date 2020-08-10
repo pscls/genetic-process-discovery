@@ -17,10 +17,10 @@ with open("./data/MODEL_DEFINTION.txt") as file:
         [trace, prob] = line.split(" ")
         true_probs.append((trace, float(prob)))
 
-def genetic_magic(symbol_sequence, true_probs):
+def genetic_magic(symbol_sequences, true_probs):
     # take only the first symbol_sequence, should be done for every one later
     # symbol_sequence = symbol_sequences[0]
-    manager = ModelManager(symbol_sequence, 10)
+    manager = ModelManager(symbol_sequences, 10)
 
     # run model epochs
     manager.run(10)
@@ -38,16 +38,16 @@ for i in range(1, 51):
         symbol_sequences = [line.strip().split(",") for line in lines]
         results_list = []
 
-        for start_index in range(0, len(symbol_sequences), 15):
-            end_index = min(start_index + 15, len(symbol_sequences))
+        for start_index in range(0, len(symbol_sequences), 1000):
+            end_index = min(start_index + 1000, len(symbol_sequences))
             print(f"    Start-Sequences: {start_index} - {end_index} (/{len(symbol_sequences)})")
 
             sequence_result = []
             threads_list = []
     
-            for index in range(start_index, end_index):
-                symbol_sequence = symbol_sequences[index]
-                t = threading.Thread(target=lambda q, arg1, arg2: q.append(genetic_magic(arg1, arg2)), args=(sequence_result, symbol_sequence, true_probs))
+            for index in range(start_index, end_index, 10):
+                partial_symbol_sequences = symbol_sequences[index:index+10]
+                t = threading.Thread(target=lambda q, arg1, arg2: q.append(genetic_magic(arg1, arg2)), args=(sequence_result, partial_symbol_sequences, true_probs))
                 t.start()
                 threads_list.append(t)
             for t in threads_list:
