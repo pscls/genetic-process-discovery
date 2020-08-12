@@ -101,6 +101,13 @@ while number_of_generations > 0:
     sequences = dict()
 
     # =============== The code below is added/changed by us =============== #
+    # This is necessary to make sure that every possible event (A, B, ...) is at least
+    # once in the generated symbol sequence. Otherwise we can get problems when comparing/merging
+    # two models from different symbol sequences.
+    #
+    # This actually breaks the random factor a bit but since the rest is still randomized we do not
+    # care about this right now.
+
     i_ = 0
     for z in seqprobs.keys():
         sequences[i_] = z[:]
