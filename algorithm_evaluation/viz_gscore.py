@@ -13,7 +13,7 @@ maxs = []
 assert sys.argv[1]
 file_name = sys.argv[1]
 
-with open(f"./data/{file_name}", "r") as file:
+with open(f"./data/generated/{file_name}", "r") as file:
     gscores = json.load(file)
 
     overlappings = [int(k) for k in gscores.keys()]

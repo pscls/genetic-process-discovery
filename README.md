@@ -1,16 +1,31 @@
 # genetic-process-discovery
 
-## generate multiple sequence:
-Run: `python3 data/generator.py <#traces> <#max_overlappings> <number_of_sequences> <output_file_name>`
+## Structure
+1. `src` - contains all algorithm files
+2. `algorithm_evaluation` - provides generation, visuzalisation and algorithm testing files
+3. `data` - stores generated files and the Process Model Definition
 
-## run code with input sequence:
-Run: `python3 src/app.py <symbol_sequence_file_name>`
+## 1. Generator
+Will generator multiple files with the required input 
+```python algorithm_evaluation/generator.py <number of sources per symbol sequence> <number of sequences per file> <number of files (1 to X)>```
 
-FYI: you do not have to care about file paths, the code taks care of it.
+e.g. `python algorithm_evaluation/generator.py 300 100 50`
 
+## 2. Algorithm Execution
+Both algorithm will produce a gscore.json which can then be passed to the visualization script.
 
-# Testing
+### 2.1 Base Algorithm
+`python algorithm_evaluation/analysis_base.py`
 
-1. Run `python3 algorithm_evaluation/generator.py` to create output files with symbol sequencess (edit of the file could be necessary) -> output_<#overlappingSources>.txt
-2. Run `python3 algorithm_evaluation/analysis_<base|genetic>.py` to train models and generate gscore for each -> gscores.json
-3. Run `python3 algorithm_evaluation/viz.py` to visualize the exported gscore metrics
+### 2.2 Genetic Algorithm
+`python algorithm_evaluation/analysis_genetic.py`
+
+## 3. G-score Visualization
+Visualization of the g-score output file from one of the analysis files.
+`python algorithm_evaluation/viz_gscore.py <file name>`
+
+e.g. `python algorithm_evaluation/viz_gscore.py gscore.json`
+
+## 4. [Optional] Fitness Function Visualization
+Visualization of the fitness function result (the export needs to be activated first to produce the required file).
+`python algorithm_evaluation/viz_wight_functions_gscores.py`
