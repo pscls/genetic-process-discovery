@@ -1,4 +1,4 @@
-# genetic-process-discovery
+# Genetic Correlation Discoveryfor Unlabeled Event Logs
 
 ## Structure
 1. `src` - contains all algorithm files
