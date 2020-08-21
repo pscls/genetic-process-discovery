@@ -8,6 +8,7 @@ import json
 import threading
 
 EXPORT_FITNESS_RESULTS = False
+NUMBER_OF_SEQUENCES_PER_MODEL_MANAGER = 20
 
 result = {}
 
@@ -37,6 +38,9 @@ for i in range(1, 51):
     with open(f"./data/generated_data/output_{i}.txt") as file:
         lines = file.readlines()
         symbol_sequences = [line.strip().split(",") for line in lines]
+
+        assert len(symbol_sequences) >= NUMBER_OF_SEQUENCES_PER_MODEL_MANAGER
+
         results_list = []
 
         for start_index in range(0, len(symbol_sequences), 1000):
@@ -46,8 +50,8 @@ for i in range(1, 51):
             sequence_result = []
             threads_list = []
     
-            for index in range(start_index, end_index, 20):
-                partial_symbol_sequences = symbol_sequences[index:index+20]
+            for index in range(start_index, end_index, NUMBER_OF_SEQUENCES_PER_MODEL_MANAGER):
+                partial_symbol_sequences = symbol_sequences[index:index+NUMBER_OF_SEQUENCES_PER_MODEL_MANAGER]
                 t = threading.Thread(target=lambda q, arg1, arg2: q.append(genetic_magic(arg1, arg2)), args=(sequence_result, partial_symbol_sequences, true_probs))
                 t.start()
                 threads_list.append(t)
