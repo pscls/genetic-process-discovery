@@ -2,13 +2,18 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import json
 import math
+import sys
 
 averages = []
 variance = []
 standard_deviation = []
 mins = []
 maxs = []
-with open("./data/gscore_genetic_3000.json", "r") as file:
+
+assert sys.argv[1]
+file_name = sys.argv[1]
+
+with open(f"./data/{file_name}", "r") as file:
     gscores = json.load(file)
 
     overlappings = [int(k) for k in gscores.keys()]
