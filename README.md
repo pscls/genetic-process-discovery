@@ -1,5 +1,8 @@
 # Genetic Correlation Discoveryfor Unlabeled Event Logs
 
+This repository contains a genetic extension as well as an generation, visualization and algorithm-test scripts to the core approach of Diogo R. Ferreira and Daniel Gillblad which can be found [here](https://github.com/pscls/genetic-process-discovery/tree/master/src/base_files_original).
+
+
 ## Structure
 1. `src` - contains all algorithm files
 2. `algorithm_evaluation` - provides generation, visuzalisation and algorithm testing files
