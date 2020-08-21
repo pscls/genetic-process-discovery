@@ -5,6 +5,10 @@
 2. `algorithm_evaluation` - provides generation, visuzalisation and algorithm testing files
 3. `data` - stores generated files and the Process Model Definition
 
+## Documents
+1. Paper - tbd
+2. Blog - [Here](https://github.com/pscls/genetic-process-discovery/wiki/Blog)
+
 ## 1. Generator
 Will generator multiple files with the required input 
 ```python algorithm_evaluation/generator.py <number of sources per symbol sequence> <number of sequences per file> <number of files (1 to X)>```
