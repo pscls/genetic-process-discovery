@@ -7,6 +7,8 @@ from Gscore import get_g_score
 import json
 import threading
 
+EXPORT_FITNESS_RESULTS = False
+
 result = {}
 
 true_probs = []
@@ -18,9 +20,8 @@ with open("./data/MODEL_DEFINTION.txt") as file:
         true_probs.append((trace, float(prob)))
 
 def genetic_magic(symbol_sequences, true_probs):
-    # take only the first symbol_sequence, should be done for every one later
-    # symbol_sequence = symbol_sequences[0]
-    manager = ModelManager(symbol_sequences, 10)
+    # create new model manager
+    manager = ModelManager(symbol_sequences, number_of_models=len(symbol_sequences), export_fitness_fnc_results=EXPORT_FITNESS_RESULTS)
 
     # run model epochs
     manager.run(10)
@@ -45,8 +46,8 @@ for i in range(1, 51):
             sequence_result = []
             threads_list = []
     
-            for index in range(start_index, end_index, 10):
-                partial_symbol_sequences = symbol_sequences[index:index+10]
+            for index in range(start_index, end_index, 20):
+                partial_symbol_sequences = symbol_sequences[index:index+20]
                 t = threading.Thread(target=lambda q, arg1, arg2: q.append(genetic_magic(arg1, arg2)), args=(sequence_result, partial_symbol_sequences, true_probs))
                 t.start()
                 threads_list.append(t)
@@ -57,6 +58,7 @@ for i in range(1, 51):
     
         result[i] = results_list
 
+# write gscore results to file
 fout = open('./data/generated_data/gscore.json', 'w')
 fout.write(json.dumps(result))
 fout.close()

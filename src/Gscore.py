@@ -21,7 +21,7 @@ def get_g_star_score(predicted_probs, true_probs):
         true_value = true_dict[key] if key in true_dict else 0
         
         pred_value = 0
-        for _ in len(key):
+        for _ in range(len(key)):
             if key in pred_dict:
                 pred_value = pred_dict[key]
                 break

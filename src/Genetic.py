@@ -1,7 +1,7 @@
 import random
 import sys
 from base_files_edited.mim import model as Model
-from Gscore import get_g_score
+from Gscore import get_g_score, get_g_star_score
 from operator import itemgetter
 import json
 
@@ -88,40 +88,30 @@ def save_gscore_for_models(models):
         
         
         gscores = [get_g_score(sorted(model.seqprobs().items(), key=itemgetter(1), reverse=True), true_probs) for model in models]
-        fout = open('./data/generated_data/gscore_wight_function.json', 'a+')
+        fout = open('./data/generated_data/fitness_fnc_results.json', 'a+')
         fout.write(json.dumps(gscores) + '\n')
         fout.close()
-        
-        # print(f"G-Score: {get_g_score(self.get_best_model_probility(), true_probs)}")
 
-# Selection
-
-
-def rank_models(models, symbol_sequences):
+def rank_models(models, symbol_sequences, export_fitness_fnc_results=False):
     # TODO: We could think about implement a tournament process here
     ranked_models = sorted(models, key=lambda model: evaluate_model(model, symbol_sequences, models), reverse=True)
     
-    # save_gscore_for_models(ranked_models)
+    if export_fitness_fnc_results:
+        save_gscore_for_models(ranked_models)
 
     return ranked_models
 
-# Evaluation
-
 
 def evaluate_model(model, symbol_sequences, models):
-    # value = random.randint(1, 100)
+    value = g_score(model, models)
 
-    # Strategies:
-    #   Behavioral Appropriateness
-    #   Token-Replay
-    #   Alignment
-
+    # Other possible fitness functions:
     #value = token_replay_on_symbol_sequences(model, random.choices(symbol_sequences, k=20))
     #value = token_replay_on_all_estimated_traces(model, models)
-    # value = overall_trace_probabilities(model, models)
+    #value = overall_trace_probabilities(model, models)
     #value = linked_token_replay(model, random.choices(symbol_sequences, k=20))
-    value = g_score(model, models)
     #value = random.random()
+
     return value
 
 def g_score(main_model, models):
@@ -131,7 +121,7 @@ def g_score(main_model, models):
     score = 0.0
     for model in models:
         model_traces = sorted(model.seqprobs().items(), key=itemgetter(1), reverse=True)
-        score += get_g_score(main_model_traces, model_traces)
+        score += get_g_star_score(main_model_traces, model_traces)
 
     return score / len(models)
 

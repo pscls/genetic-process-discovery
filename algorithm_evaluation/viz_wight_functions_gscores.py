@@ -3,15 +3,12 @@ import matplotlib.patches as mpatches
 import json
 import math
 
-with open("./data/generated_data/gscore_wight_function.json", "r") as file:
+with open("./data/generated_data/fitness_fnc_results.json", "r") as file:
     lines = file.readlines() 
 
     for line in lines:
         gscores = json.loads(line)
-        plt.plot(list(range(len(gscores))), gscores, 'o', markersize=4, color='black',  alpha=0.1)
-    
-        # for i in range(len(gscores)):
-        #     plt.scatter(i, gscores[i])
+        plt.plot(list(range(len(gscores))), gscores, 'o', markersize=4, color='black',  alpha=0.05)
     
     plt.xticks([0, 5, 10, 15, 19])
 
