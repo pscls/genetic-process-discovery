@@ -16,7 +16,7 @@ with open("./data/MODEL_DEFINTION.txt") as file:
         [trace, prob] = line.split(" ")
         true_probs.append((trace, float(prob)))
 
-for i in range(1, 51):
+for i in range(1, 5):
     print(f"Start: {i}")
     result[i] = []
     with open(f"./data/generated_data/output_{i}.txt") as file:
