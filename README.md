@@ -7,7 +7,7 @@ This repository contains a genetic extension as well as an generation, visualiza
 1. `src` - contains all algorithm files
 2. `algorithm_evaluation` - provides generation, visuzalisation and algorithm testing files
 3. `data` - stores generated files and the Process Model Definition
-4. `Docs` - presentation slides, blog and paper
+4. `docs` - presentation slides, blog and paper
 
 ## 1. Generator
 Will generator multiple files with the required input 
